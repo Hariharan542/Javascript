@@ -1,0 +1,22 @@
+let person = prompt("Please enter your choice:");
+console.log("person:"+person);
+var str=['rock','paper','scissor'];
+var s= Math.floor(Math.random()*3);
+var c=str[s];
+console.log("computer:"+c);
+if(person=="rock"){
+    if(c=="rock") console.log("Draw");
+    else if(c=="paper") console.log("computer wins")
+    else console.log("person wins");
+}else if(person=="scissor"){
+    if(c=="scissor") console.log("Draw");
+    else if(c=="rock") console.log("computer wins")
+    else console.log("person wins");
+}else if(person=="paper"){
+    if(c=="paper") console.log("Draw");
+    else if(c=="scissor") console.log("computer wins")
+    else console.log("person wins");
+}else{
+    console.log("please enter rock or scissor or paper");}
+  
+  
