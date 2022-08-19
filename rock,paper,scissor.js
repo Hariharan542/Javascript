@@ -1,8 +1,7 @@
 let person = prompt("Please enter your choice:");
 console.log("person:"+person);
 var str=['rock','paper','scissor'];
-var s= Math.floor(Math.random()*3);
-var c=str[s];
+var c= str[Math.floor(Math.random()*3)];
 console.log("computer:"+c);
 if(person=="rock"){
     if(c=="rock") console.log("Draw");
