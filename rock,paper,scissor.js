@@ -16,6 +16,6 @@ if(person=="rock"){
     else if(c=="scissor") console.log("computer wins")
     else console.log("person wins");
 }else{
-    console.log("please enter rock or scissor or paper");}
+    alert("please enter rock or scissor or paper");}
   
   
