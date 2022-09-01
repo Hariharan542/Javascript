@@ -25,3 +25,9 @@ Route.post('maths','ConsController.maths').middleware('Mid')
 Route.get('maths','ConsController.maths').middleware('Mid')
 Route.put('maths','ConsController.maths').middleware('Mid')
 Route.patch('maths','ConsController.maths').middleware('Mid')
+
+
+Route.post('create','CurdsController.create')
+Route.delete('del','CurdsController.del')
+Route.patch('upd','CurdsController.upd')
+Route.get('read','CurdsController.read')

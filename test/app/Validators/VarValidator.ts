@@ -23,7 +23,10 @@ export default class VarValidator {
    *     ])
    *    ```
    */
-  public schema = schema.create({})
+  public schema = schema.create({
+    "a": schema.number(),
+    "b":schema.number()
+  })
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`
