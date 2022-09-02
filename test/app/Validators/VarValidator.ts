@@ -25,7 +25,7 @@ export default class VarValidator {
    */
   public schema = schema.create({
     "a": schema.number(),
-    "b":schema.number(),
+    "b":schema.number()
   })
 
   /**
