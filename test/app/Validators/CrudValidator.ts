@@ -1,7 +1,7 @@
 import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class VarValidator {
+export default class CrudValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -24,8 +24,9 @@ export default class VarValidator {
    *    ```
    */
   public schema = schema.create({
-    "a": schema.number(),
-    "b":schema.number(),
+    id:schema.number(),
+    name:schema.string(),
+    deptId:schema.number()
   })
 
   /**
