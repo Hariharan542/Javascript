@@ -89,6 +89,7 @@
     </v-form>
     <v-simple-table>
     <tr>
+    <th>Id</th>
       <th>Name</th>
       <th>Email</th>
       <th>Gender</th>
@@ -99,6 +100,7 @@
          </tr>
     <tr v-for="(item,i) in arr"
       :key="i">
+      <td>{{item.id}}</td>
       <td>{{item.name}}</td>
       <td>{{item.email}}</td>
       <td>{{item.gender}}</td>
@@ -127,6 +129,7 @@
 <script>
  export default {
       data: () => ({
+        id:0,
         tempObj: {}, 
         valid: true,
         name: '',
@@ -159,7 +162,9 @@
       methods: {
         validate () {
           if(this.$refs.form.validate()){
+            this.id++,
           this.arr.push( {
+            id:this.id,
             name : this.name,
             email : this.email,
             gender :this.gender,
@@ -196,8 +201,11 @@
       },
       cancel () {
         this.pop = false
+        this.reset()
+        this.buton=true
       },
       save () {
+        
         let test = this.arr.findIndex(temp => temp.id == this.tempObj.id)
         
           this.arr[test].name = this.name
@@ -210,6 +218,7 @@
          this.cancel()
       },
       reset(){
+
         this.name = ''
         this.email =''
         this.gender =''
