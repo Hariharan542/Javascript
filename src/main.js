@@ -5,6 +5,13 @@ import router from './router'
 
 Vue.config.productionTip = false
 
+Vue.filter('place',function(a){
+  if(a.length>10){
+    return a.slice(0,10)+'...'
+  }
+  else
+    return a
+})
 new Vue({
   vuetify,
   router,

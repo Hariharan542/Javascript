@@ -100,7 +100,7 @@
     <tr v-for="item in arr"
       :key="item.id">
       <td>{{item.id}}</td>
-      <td>{{item.name}}</td>
+      <td>{{item.name | place}}</td>
       <td>{{item.email}}</td>
       <td>{{item.gender}}</td>
       <td>{{item.hobbies}}</td>
@@ -194,7 +194,7 @@
       test.name = this.name
       test.email = this.email
       test.gender = this.gender
-      test.hobbies = this.Hobbies
+      test.hobbies = this.hobbies
       test.select=this.select
       await Vue.axios.put(`http://127.0.0.1:3333/upd/${test.id}`, {
            name : this.name,
