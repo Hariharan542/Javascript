@@ -1,7 +1,7 @@
 <template>
    <v-app>
       <v-form
-    ref="form"
+    refs="form"
     v-model="valid"
     lazy-validation
   >
@@ -20,8 +20,7 @@
       </v-btn>
     </v-flex>     
       </template>
-  <v-card text class="white">
-  
+  <v-card text class="white"> 
     <v-text-field
       v-model="name"
       :rules="nameRules"
@@ -71,7 +70,7 @@
       v-if="buton"
         :disabled="!valid"
         color="success"
-        @click="validate"
+        @click="insert"
       >
         Validate
       </v-btn>
@@ -98,39 +97,33 @@
       <th>Action</th>
       
          </tr>
-    <tr v-for="(item,i) in arr"
-      :key="i">
+    <tr v-for="item in arr"
+      :key="item.id">
       <td>{{item.id}}</td>
       <td>{{item.name}}</td>
       <td>{{item.email}}</td>
       <td>{{item.gender}}</td>
-      <td>{{item.Hobbies}}</td>
+      <td>{{item.hobbies}}</td>
       <td>{{item.select}}</td>
       <td><v-btn @click="change(item)"><v-icon small
         >mdi-pencil</v-icon></v-btn></td>
-      <td><v-btn @click="deleteRow(item)"><v-icon small
+      <td><v-btn @click="deleteRow(item.id)"><v-icon small
         >mdi-delete</v-icon></v-btn></td>
     </tr>
    </v-simple-table>
-    <v-dialog v-model="dialogDelete" max-width="250px">
-          <v-card>
-            <v-card-title ><center>Click OK for delete?</center></v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="red" text @click="close">Cancel</v-btn>
-              <v-btn color="blue" text @click="deleteConfirm">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
    
      </v-app>
 </template>
 <script>
+  import Vue from 'vue';
+  import axios from 'axios';
+  import VueAxios from 'vue-axios';
+  Vue.use(VueAxios,axios);
+  var test
  export default {
       data: () => ({
-        id:0,
-        tempObj: {}, 
+        arr:[],
+        id:'', 
         valid: true,
         name: '',
         nameRules: [ 
@@ -142,8 +135,8 @@
           email => !!email || 'E-mail is required',
           v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
         ],
-        gender:null,
-        select: null,
+        gender:'',
+        select: '',
         location: [
           'Tamil Nadu',
           'Kerala',
@@ -154,69 +147,83 @@
         choice: [
        {id :1,name:'cricket'},{id:2,name:'swiming'},{id:3,name:'other'}],
        Hobbies:[],
-       arr:[],
       dialogDelete:false,
       pop:false,
       buton:true,
-      }),      
+      }),  
+      mounted(){
+        Vue.axios.get("http://127.0.0.1:3333/read").
+           then((res)=>{
+             this.arr=res.data;
+             console.warn(res.data);
+             })
+      },    
       methods: {
-        validate () {
-          if(this.$refs.form.validate()){
-            this.id++,
-          this.arr.push( {
+        async insert(){
+        await Vue.axios.post('http://127.0.0.1:3333/create',this.getData()).then((res)=>{
+    console.warn(res)
+  })
+
+  this.pop=false
+          this.buton=true
+          this.reset()
+          this.close()
+        },
+        getData(){
+          return{
             id:this.id,
             name : this.name,
             email : this.email,
             gender :this.gender,
             Hobbies: this.Hobbies,
             select: this.select,
-          })}
-          this.pop=false
-          this.buton=true
-          this.reset()
-          this.close()
-          //console.log(JSON.stringify(arr))
+          }
         },
-        change (item) {
-        this.pop = true
-        this.buton=false
-        this.tempObj = item 
-        this.name = item.name
-        this.email = item.email
-        this.gender=item.gender
-        this.Hobbies= item.Hobbies
-        this.select= item.select
+      change(item) {
+      this.buton=false
+      this.pop = true
+      test = item
+      this.name = item.name
+      this.email = item.email
+      this.gender = item.gender
+      this.Hobbies = item.hobbies
+      this.select=item.select
+    
+    },
+    async save() {
+      test.name = this.name
+      test.email = this.email
+      test.gender = this.gender
+      test.hobbies = this.Hobbies
+      test.select=this.select
+      await Vue.axios.put(`http://127.0.0.1:3333/upd/${test.id}`, {
+           name : this.name,
+           email : this.email,
+           gender : this.gender,
+           hobbies : this.Hobbies,
+           select:this.select
+      })
+      .then(response => {
+          console.log(response);
+        });
+      this.pop=false
+       
+        //  this.reset()
+         this.cancel()
+         this.$refs.form.reset()
       },
-        deleteRow(item){
-          this.edit = this.arr.indexOf(item)
-          this.editItem = Object.assign({}, item)
-          this.dialogDelete = true
-        },
-        deleteConfirm () {
-        this.arr.splice(this.edit, 1)
-        this.close()
+        deleteRow(id) {
+        Vue.axios.delete(`http://127.0.0.1:3333/delete/${id}`)
       },
-      close() {
-        this.dialogDelete = false
-      },
-      cancel () {
+      // close() {
+      //   this.dialogDelete = false
+      // },
+       cancel () {
         this.pop = false
         this.reset()
         this.buton=true
-      },
-      save () {
-        
-        let test = this.arr.findIndex(temp => temp.id == this.tempObj.id)
-        
-          this.arr[test].name = this.name
-          this.arr[test].email = this.email
-          this.arr[test].gender =this.gender
-          this.arr[test].Hobbies= this.Hobbies
-          this.arr[test].select= this.select
-         this.buton=true
-         this.reset()
-         this.cancel()
-      },
+       },
+     
       reset(){
 
         this.name = ''
@@ -226,5 +233,6 @@
         this.select= ''
       }
     }
- }
+  }
+ 
 </script>
