@@ -9,13 +9,7 @@
 </template>
 
 <script>
-//import HelloWorld from "@/components/HelloWorld.vue";
-//import FormTwo from "@/components/formTwo.vue";
 export default{
-  name:'App',
-  // components:{
-  //   HelloWorld,
-  //   FormTwo
-  //}
+  name:'App'
 }
 </script>

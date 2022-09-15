@@ -23,19 +23,19 @@
        </template>
    <v-card text class="white"> 
      <v-text-field
-       v-model="departmentId"
+       v-model="field.departmentId"
        :rules="idRules"
        label="departmentId"
        required
      ></v-text-field>      
      <v-text-field
-       v-model="departmentName"
+       v-model="field.departmentName"
        :rules="nameRules"
        label="departmentName"
        required
      ></v-text-field>
      <v-text-field
-     v-model="departmentStaff"
+     v-model="field.departmentStaff"
      :rules="nameRules"
      label="departmentStaff"
      required
@@ -92,22 +92,27 @@
         data: () => ({
           arr:[],
           link:'http://127.0.0.1:3333/search',
-          departmentId:'', 
+          
           idRules:[
             name=>!!name||'id is required',
             v=>/^[0-9]+$/.test(v) || 'id is not valid'
           ],
           fill: true,
-          departmentName: '',
-          departmentStaff:'',
+          
           nameRules: [ 
             name=>!!name||'Name is required',
             v=>/^[a-z A-Z]+$/.test(v) || 'name is not valid'
           ],
         dialog:false,
         buton:true,
+        field:{
+          departmentId:'', 
+          departmentName: '',
+          departmentStaff:'',
+        },
         }),  
         mounted(){
+          console.log(process.env.VUE_APP_SERVER_URL);
           Vue.axios.get('http://127.0.0.1:3333/view').
              then((res)=>{
                this.arr=res.data;
@@ -116,37 +121,25 @@
         },    
         methods: {
           async insert(){
-          await Vue.axios.post('http://127.0.0.1:3333/insert',this.getData()).then((res)=>{
+          await Vue.axios.post('http://127.0.0.1:3333/insert',this.field).then((res)=>{
       console.warn(res)
     })
-  
-    this.pop=false
-            this.buton=true
-            // this.reset()
+      this.pop=false
+      this.buton=true
             this.close()
           },
-          getData(){
-            return{
-              departmentId:this.departmentId,
-              departmentName:this.departmentName,
-              departmentStaff : this.departmentStaff,
-            }
-          },
+          
         change(item) {
-        this.buton=false
-        this.pop = true
+        this.dialog = true
         test = item
-        this. departmentName= item.departmentName
-        this.departmentStaff = item.departmentStaff
-      
+        this. departmentName= test.departmentName
+        this.departmentStaff = test.departmentStaff
+        this.buton=false
       },
       async save() {
         test.departmentName = this.departmentName
         test.departmentStaff = this.departmentStaff
-        await Vue.axios.put(`http://127.0.0.1:3333/update/${test.department_id}`, {
-             departmentName : this.departmentName,
-             departmentStaff : this.departmentStaff,
-        })
+        await Vue.axios.put(`http://127.0.0.1:3333/update/${test.department_id}`,this.field)
         .then(response => {
             console.log(response);
           });

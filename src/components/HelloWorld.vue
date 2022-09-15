@@ -119,6 +119,7 @@
      </v-app>
 </template>
 <script>
+  import {readData} from '../components/service/api.js'
   import Vue from 'vue';
   import axios from 'axios';
   import VueAxios from 'vue-axios';
@@ -157,10 +158,10 @@
       buton:true,
       }),  
       mounted(){
-        Vue.axios.get('http://127.0.0.1:3333/read').
-           then((res)=>{
-             this.arr=res.data;
-             console.warn(res.data);
+        readData()
+        .then((res)=>{
+             this.arr=res
+             console.log(res)
              })
       },    
       methods: {

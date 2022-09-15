@@ -23,6 +23,7 @@ export default{
     methods:{
         async Search() {
           let value = {val:this.val}
+          console.log(this.reg)
           await Vue.axios.post(this.reg, value).then((res)=> {
               console.log(res)
             this.$emit('searchEmits', res);
