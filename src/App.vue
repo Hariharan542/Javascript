@@ -1,20 +1,21 @@
 <template>
   <div id="app">
-    <!-- <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <nav>
+      <router-link to="/HelloWorld">HelloWorld</router-link> |
+      <router-link to="/FormTwo">FormTwo</router-link>
     </nav>
-    <router-view/> -->
-    <HelloWorld />
+    <router-view/>
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+//import HelloWorld from "@/components/HelloWorld.vue";
+//import FormTwo from "@/components/formTwo.vue";
 export default{
   name:'App',
-  components:{
-    HelloWorld,
-  }
+  // components:{
+  //   HelloWorld,
+  //   FormTwo
+  //}
 }
 </script>

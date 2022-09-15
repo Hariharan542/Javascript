@@ -1,15 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HelloWorld from '@/components/HelloWorld.vue'
+import formTwo from '@/components/formTwo.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'home',
-  //   component: HomeView
-  // }
+  {
+    path: '/FormTwo',
+    name: 'formTwo',
+    component: formTwo
+  },
   {
     path: '/HelloWorld',
     name: 'HelloWorld',

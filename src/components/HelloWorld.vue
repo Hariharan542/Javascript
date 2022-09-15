@@ -1,5 +1,9 @@
 <template>
    <v-app>
+    <div>
+      <SearchBar :reg="link"  @searchEmits="Search"/>
+      
+    </div>
       <v-form
     refs="form"
     v-model="valid"
@@ -123,6 +127,7 @@
  export default {
       data: () => ({
         arr:[],
+        link:'http://127.0.0.1:3333/sear',
         id:'', 
         valid: true,
         name: '',
@@ -152,7 +157,7 @@
       buton:true,
       }),  
       mounted(){
-        Vue.axios.get("http://127.0.0.1:3333/read").
+        Vue.axios.get('http://127.0.0.1:3333/read').
            then((res)=>{
              this.arr=res.data;
              console.warn(res.data);
@@ -207,17 +212,13 @@
           console.log(response);
         });
       this.pop=false
-       
-        //  this.reset()
+      
          this.cancel()
          this.$refs.form.reset()
       },
         deleteRow(id) {
         Vue.axios.delete(`http://127.0.0.1:3333/delete/${id}`)
       },
-      // close() {
-      //   this.dialogDelete = false
-      // },
        cancel () {
         this.pop = false
         this.reset()
@@ -231,8 +232,12 @@
         this.gender =''
         this.Hobbies=''
         this.select= ''
-      }
+      },
+      Search(val) {
+        console.log(val.data)
+          this.arr= val.data
     }
   }
+}
  
 </script>
