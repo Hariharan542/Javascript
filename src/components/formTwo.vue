@@ -12,12 +12,14 @@
    <template v-slot:activator="{ on,attr }">
    <v-flex text-right align-right>
      <v-btn
+     @click="close"
      elevation='5'
          color="primary"
          v-bind="attr"
          v-on="on"
+         
        >
-         <h3><v-icon>mdi-plus</v-icon></h3>
+         <v-icon >mdi-plus</v-icon>
        </v-btn>
      </v-flex>     
        </template>
@@ -47,7 +49,7 @@
          color="success"
          @click="insert"
        >
-         Validate
+         Insert
        </v-btn>
        <v-btn
        v-if="!buton"
@@ -63,9 +65,12 @@
      </v-form>
      <v-simple-table>
     <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Staff</th>
+        <th>departmentId<v-icon v-if="idArrow" @click="idA" small>mdi-arrow-up</v-icon>
+          <v-icon v-if="!idArrow" @click="idD" small>mdi-arrow-down</v-icon></th>
+        <th>Department Name<v-icon v-if="nameArrow" @click="nameA" small>mdi-arrow-up</v-icon>
+          <v-icon v-if="!nameArrow" @click="nameD" small>mdi-arrow-down</v-icon></th>
+        <th>Department Staff<v-icon v-if="StaffArrow" @click="staffA" small>mdi-arrow-up</v-icon>
+          <v-icon v-if="!StaffArrow" @click="staffD" small>mdi-arrow-down</v-icon></th>
     </tr>
      <tr v-for="item in arr"
        :key="item.departmentId">
@@ -74,7 +79,7 @@
        <td>{{item.department_staff }}</td>
        <td><v-btn @click="change(item)"><v-icon small
          >mdi-pencil</v-icon></v-btn></td>
-       <td><v-btn @click="deleteRow(item.id)"><v-icon small
+       <td><v-btn @click="deleteRow(item.department_id)"><v-icon small
          >mdi-delete</v-icon></v-btn></td>
      </tr>
     </v-simple-table>
@@ -86,13 +91,16 @@
     import Vue from 'vue';
     import axios from 'axios';
     import VueAxios from 'vue-axios';
+import { readData,insertData,editData,deleteData,sortIdAsc,sortIdDesc,sortNameAsc,sortNameDesc,sortStaffAsc,sortStaffDesc } from './service/api';
     Vue.use(VueAxios,axios);
-    var test
    export default {
         data: () => ({
+          idArrow:true,
+          nameArrow:true,
+          StaffArrow:true,
+          temp:{},
           arr:[],
           link:'http://127.0.0.1:3333/search',
-          
           idRules:[
             name=>!!name||'id is required',
             v=>/^[0-9]+$/.test(v) || 'id is not valid'
@@ -105,6 +113,7 @@
           ],
         dialog:false,
         buton:true,
+        
         field:{
           departmentId:'', 
           departmentName: '',
@@ -112,67 +121,88 @@
         },
         }),  
         mounted(){
-          console.log(process.env.VUE_APP_SERVER_URL);
-          Vue.axios.get('http://127.0.0.1:3333/view').
+          readData().
              then((res)=>{
                this.arr=res.data;
-               console.warn(res)
                })
         },    
         methods: {
           async insert(){
-          await Vue.axios.post('http://127.0.0.1:3333/insert',this.field).then((res)=>{
-      console.warn(res)
-    })
-      this.pop=false
-      this.buton=true
-            this.close()
+          insertData(this.field).then((res)=>{
+          console.warn(res)
+          })
+          readData().
+             then((res)=>{
+               this.arr=res.data;
+               })
+        this.buton=true
+        this.dialog=true
+        this.cancel()      
           },
-          
-        change(item) {
+      change(item) {
         this.dialog = true
-        test = item
-        this. departmentName= test.departmentName
-        this.departmentStaff = test.departmentStaff
-        this.buton=false
+        this.buton = false
+        this.temp=item
+          this.field={
+            departmentId:item.department_id,
+           departmentName:item.department_name,
+          departmentStaff:item.department_staff
+          }
+        console.log(this.field)
       },
-      async save() {
-        test.departmentName = this.departmentName
-        test.departmentStaff = this.departmentStaff
-        await Vue.axios.put(`http://127.0.0.1:3333/update/${test.department_id}`,this.field)
-        .then(response => {
-            console.log(response);
-          });
-        this.pop=false
-         
-          //  this.reset()
-           this.cancel()
-           this.$refs.form.reset()
+        save() {
+            this.formTwo= this.item
+            this.dialog = false
+            this.buton = true
+            editData(this.field)
+            this.cancel()
         },
-          deleteRow(department_id) {
-          Vue.axios.delete(`http://127.0.0.1:3333/drop/${department_id}`)
+        deleteRow(department_id) {
+        deleteData(department_id).then((res)=>console.log(res))
         },
-        // close() {
-        //   this.dialogDelete = false
-        // },
-         cancel () {
-          this.pop = false
-        //   this.reset()
+        close() {
+          this.reset()
           this.buton=true
+          this.dialog=true
+          
+        },
+         cancel () {
+          this.dialog = false
+          this.buton=true
+          this.reset()
          },
        
-        // reset(){
-  
-        //   this.name = ''
-        //   this.email =''
-        //   this.gender =''
-        //   this.Hobbies=''
-        //   this.select= ''
-        // }
+         reset(){
+          this.field={}
+         },
         
         Search(val) {
         console.log(val.data)
           this.arr= val.data
+    },
+    idA(){
+      sortIdAsc().then((res)=>{this.arr=res.data})
+      this.idArrow=false
+    },
+    idD(){
+      sortIdDesc().then((res)=>{this.arr=res.data})
+      this.idArrow=true
+    },
+    nameA(){
+      sortNameAsc().then((res)=>{this.arr=res.data})
+      this.nameArrow=false
+    },
+    nameD(){
+      sortNameDesc().then((res)=>{this.arr=res.data})
+      this.nameArrow=true
+    },
+    staffA(){
+      sortStaffAsc().then((res)=>{this.arr=res.data})
+      this.StaffArrow=false
+    },
+    staffD(){
+      sortStaffDesc().then((res)=>{this.arr=res.data})
+      this.StaffArrow=true
     }
     }
   }

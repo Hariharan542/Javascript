@@ -26,13 +26,13 @@
       </template>
   <v-card text class="white"> 
     <v-text-field
-      v-model="name"
+      v-model="input.name"
       :rules="nameRules"
       label="Name"
       required
     ></v-text-field>      
     <v-text-field
-      v-model="email"
+      v-model="input.email"
       :rules="emailRules"
       label="E-mail"
       required
@@ -40,7 +40,7 @@
     <br>
     <h3>Gender</h3>
     <v-radio-group
-    v-model="gender"
+    v-model="input.gender"
     row
     >
     <v-radio
@@ -54,7 +54,7 @@
   </v-radio-group>
     <h2>Hobbies</h2>
        <v-checkbox
-      v-model="Hobbies"
+      v-model="input.Hobbies"
         v-for="(C) in choice"
         :key="C.id"
         :label="C.name"
@@ -62,7 +62,7 @@
         required
       ></v-checkbox>
       <v-autocomplete
-        v-model="select"
+        v-model="input.select"
         :items="location"
         :rules="[v => !!v || 'Location is required']"
         label="location"
@@ -119,7 +119,7 @@
      </v-app>
 </template>
 <script>
-  import {readData} from '../components/service/api.js'
+  import {readData,insertData,editData} from '../components/service/api.js'
   import Vue from 'vue';
   import axios from 'axios';
   import VueAxios from 'vue-axios';
@@ -128,21 +128,25 @@
  export default {
       data: () => ({
         arr:[],
+        test:{},
         link:'http://127.0.0.1:3333/sear',
-        id:'', 
+        input:{
+          id:'',
+          name: '',
+          email: '',
+          gender:'',
+          select: '',
+          Hobbies:[],
+        },
         valid: true,
-        name: '',
         nameRules: [ 
           name=>!!name||'Name is required',
           v=>/^[a-z A-Z]+$/.test(v) || 'name is not valid'
         ],
-        email: '',
         emailRules: [
           email => !!email || 'E-mail is required',
           v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
         ],
-        gender:'',
-        select: '',
         location: [
           'Tamil Nadu',
           'Kerala',
@@ -152,7 +156,6 @@
         ],
         choice: [
        {id :1,name:'cricket'},{id:2,name:'swiming'},{id:3,name:'other'}],
-       Hobbies:[],
       dialogDelete:false,
       pop:false,
       buton:true,
@@ -166,34 +169,21 @@
       },    
       methods: {
         async insert(){
-        await Vue.axios.post('http://127.0.0.1:3333/create',this.getData()).then((res)=>{
-    console.warn(res)
-  })
-
-  this.pop=false
+        await insertData(this.input)
+          this.pop=false
           this.buton=true
           this.reset()
           this.close()
         },
-        getData(){
-          return{
-            id:this.id,
-            name : this.name,
-            email : this.email,
-            gender :this.gender,
-            Hobbies: this.Hobbies,
-            select: this.select,
-          }
-        },
       change(item) {
       this.buton=false
       this.pop = true
-      test = item
-      this.name = item.name
-      this.email = item.email
-      this.gender = item.gender
-      this.Hobbies = item.hobbies
-      this.select=item.select
+      this.test = item
+      this.name = test.name
+      this.email = test.email
+      this.gender = test.gender
+      this.Hobbies = test.hobbies
+      this.select=test.select
     
     },
     async save() {
@@ -202,21 +192,15 @@
       test.gender = this.gender
       test.hobbies = this.hobbies
       test.select=this.select
-      await Vue.axios.put(`http://127.0.0.1:3333/upd/${test.id}`, {
-           name : this.name,
-           email : this.email,
-           gender : this.gender,
-           hobbies : this.Hobbies,
-           select:this.select
-      })
+    editData(this.input)
       .then(response => {
           console.log(response);
         });
-      this.pop=false
+      // this.pop=false
       
-         this.cancel()
-         this.$refs.form.reset()
-      },
+      //    this.cancel()
+      //    this.$refs.form.reset()
+       },
         deleteRow(id) {
         Vue.axios.delete(`http://127.0.0.1:3333/delete/${id}`)
       },

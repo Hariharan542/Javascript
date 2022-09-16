@@ -1,10 +1,10 @@
 
 <template>
     <div>
-        <v-text-field label="Find"  v-model="val" ></v-text-field>
-        <v-btn @click="Search">
+        <v-text-field label="Find" @keyup="Search"  v-model="val" ></v-text-field>
+        <!-- <v-btn @mousedown="">
             Search
-        </v-btn>
+        </v-btn> -->
     </div>
 </template>
 
@@ -28,8 +28,6 @@ export default{
               console.log(res)
             this.$emit('searchEmits', res);
           })
-          
-            this.val = ''
         
         },
     },
