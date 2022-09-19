@@ -6,6 +6,17 @@ import router from './router'
 Vue.config.productionTip = false
  Vue.component('SearchBar',searchBar)
 
+
+ Vue.directive('comma',{
+  componentUpdated:(e1,binding,vnode)=> {
+    
+    binding.value = binding.value.replace(/\D/g, "")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      vnode.context.field.departmentId=binding.value
+    console.log(binding.value)
+  }
+ })
+
 Vue.filter('place',function(a){
   if(a.length>10){
     return a.slice(0,10)+'...'

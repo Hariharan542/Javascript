@@ -1,6 +1,6 @@
 <template>
     <v-app>
-      <SearchBar :reg="link"  @searchEmits="Search"/>
+      <SearchBar :reg="link"  @searchEmits="Search"/> 
        <v-form
      refs="form"
      v-model="fill"
@@ -26,6 +26,7 @@
    <v-card text class="white"> 
      <v-text-field
        v-model="field.departmentId"
+       v-comma="field.departmentId"
        :rules="idRules"
        label="departmentId"
        required
@@ -95,6 +96,7 @@ import { readData,insertData,editData,deleteData,sortIdAsc,sortIdDesc,sortNameAs
     Vue.use(VueAxios,axios);
    export default {
         data: () => ({
+          inputField:'',
           idArrow:true,
           nameArrow:true,
           StaffArrow:true,
@@ -203,7 +205,10 @@ import { readData,insertData,editData,deleteData,sortIdAsc,sortIdDesc,sortNameAs
     staffD(){
       sortStaffDesc().then((res)=>{this.arr=res.data})
       this.StaffArrow=true
-    }
+    },
+    // Find(){
+    //   console.log(data)
+    // }
     }
   }
    
