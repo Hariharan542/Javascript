@@ -34,6 +34,7 @@ Route.group(()=>{
     Route.get('/phoneD','CustomersController.phoneD')
     Route.get('/emailA','CustomersController.emailA')
     Route.get('/emailD','CustomersController.emailD')
+    Route.get('/count','CustomersController.count')
 }).prefix('customer')
 
 Route.group(()=>{
@@ -41,6 +42,7 @@ Route.group(()=>{
     Route.delete('drop/:hotel_id','HotelsController.drop')
     Route.put('update','HotelsController.update')
     Route.get('read','HotelsController.read')
+    Route.post('address','HotelsController.address')
     Route.post('search','HotelsController.search')
     Route.get('/idA','HotelsController.idA')
     Route.get('/idD','HotelsController.idD')
@@ -58,5 +60,5 @@ Route.group(()=>{
     Route.get('/areaD','HotelsController.areaD')
     Route.get('/pincodeA','HotelsController.pincodeA')
     Route.get('/pincodeD','HotelsController.pincodeD')
-    Route.get('/count','HotelsController.count')
+    Route.get('/custName','HotelsController.custName')
 }).prefix('hotel')

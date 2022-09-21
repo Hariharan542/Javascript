@@ -76,6 +76,7 @@
       <v-icon v-if="!emailArrow" @click="emailD" small>mdi-arrow-down</v-icon></th>
       <th>customer phone<v-icon v-if="phoneArrow" @click="phoneA" small>mdi-arrow-up</v-icon>
       <v-icon v-if="!phoneArrow" @click="phoneD" small>mdi-arrow-down</v-icon></th>
+      <th>Total Hotel</th>
   </tr>
    <tr v-for="item in arr"
      :key="item.customerId">
@@ -83,6 +84,7 @@
      <td>{{item.customer_name }}</td>
      <td>{{item.customer_email }}</td>
      <td>{{item.customer_phone}}</td>
+     <td>{{item.count}}</td>
      <td><v-btn @click="change(item)"><v-icon small
        >mdi-pencil</v-icon></v-btn></td>
      <td><v-btn @click="deleteRow(item.customer_id)"><v-icon small
@@ -96,6 +98,7 @@
   import Vue from 'vue';
   import axios from 'axios';
   import VueAxios from 'vue-axios';
+
   Vue.use(VueAxios,axios);
   export default {
     data: () => ({
@@ -133,22 +136,18 @@
       },
         }),  
         mounted(){
-            Vue.axios.get('http://127.0.0.1:3333/customer/read')
+          Vue.axios.get('http://127.0.0.1:3333/customer/count')
             .then((res)=>{
                this.arr=res.data;
                })
         },    
         methods: {
-          read(){
-            Vue.axios.get('http://127.0.0.1:3333/customer/read')
-          },
           async insert(){
             Vue.axios.post('http://127.0.0.1:3333/customer/create',this.field).then((res)=>{
           console.warn(res)
           })
           this.buton=true
           this.dialog=true
-          this.mounted()
           this.cancel()      
         },
         change(item) {
@@ -173,12 +172,6 @@
         },
         deleteRow(customer_id) {
         Vue.axios.delete(`http://127.0.0.1:3333/customer/drop/${customer_id}`).then((res)=>console.log(res))
-        },
-        close() {
-          this.reset()
-          this.buton=true
-          this.dialog=true
-          
         },
         cancel () {
         this.dialog = false

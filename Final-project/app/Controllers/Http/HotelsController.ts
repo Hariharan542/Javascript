@@ -91,10 +91,22 @@ export default class HotelsController {
         return Hotel.query().orderBy("pincode","asc")       }
     public async pincodeD(){
         return Hotel.query().orderBy("pincode","desc")       }
-    //  public async count({request}:HttpContextContract){
-    //     const a=request.input("val")
-    //     return Hotel.query().groupBy("hotel_id").having("customer_id",a);
-    //  }
+    
+    public async custName()
+    {
+        return   Database
+        .from('hotels')
+        .join('customers', 'customers.customer_id', 'hotels.customer_id')
+        .select('hotels.*')
+        .select('customers.customer_name')
+    }
+    public async address(){
+        const a=Database
+        .from('hotels')
+        .select('door_no','street','landmark','area','pincode')
+        return a
+    }
+
 
 }
 
