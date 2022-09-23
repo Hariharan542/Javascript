@@ -39,31 +39,31 @@
       required
     ></v-text-field>
     <v-text-field
-      v-model="field.doorNo"
+      v-model="field.address.doorNo"
       :rules="idRules"
       label="DoorNo"
       required
     ></v-text-field>
     <v-text-field
-      v-model="field.street"
+      v-model="field.address.street"
       :rules="nameRules"
       label="Street Name"
       required
     ></v-text-field>
     <v-text-field
-      v-model="field.landmark"
+      v-model="field.address.landmark"
       :rules="nameRules"
       label="landmark"
       required
     ></v-text-field>
     <v-text-field
-      v-model="field.area"
+      v-model="field.address.area"
       :rules="nameRules"
       label="area"
       required
     ></v-text-field>  
     <v-text-field
-      v-model="field.pincode"
+      v-model="field.address.pincode"
       :rules="idRules"
       label="Pincode"
       required
@@ -86,24 +86,22 @@
   </v-form>
      <v-simple-table>
      <tr>
-        <th>Hotel ID<v-icon v-if="hotelIdArrow" @click="hotelIdA" small>mdi-arrow-up</v-icon>
-        <v-icon v-if="!hotelIdArrow" @click="hotelIdD" small>mdi-arrow-down</v-icon></th>
-        <th>Hotel Name<v-icon v-if="nameArrow" @click="nameA" small>mdi-arrow-up</v-icon>
-        <v-icon v-if="!nameArrow" @click="nameD" small>mdi-arrow-down</v-icon></th>
+      <th>Hotel ID<v-icon @click="sort('hotelId','asc')" small>mdi-arrow-up</v-icon>
+        <v-icon  @click="sort('hotelId','desc')" small>mdi-arrow-down</v-icon></th>
+        <th>Hotel Name<v-icon  @click="sort('hotelName','asc')" small>mdi-arrow-up</v-icon>
+        <v-icon  @click="sort('hotelName','desc')" small>mdi-arrow-down</v-icon></th>
         <th>Hotel Address</th>
-          <!-- <v-icon v-if="addressArrow" @click="addressA" small>mdi-arrow-up</v-icon>
-        <v-icon v-if="!addressArrow" @click="addressD" small>mdi-arrow-down</v-icon></th> -->
-        <th>customer Id<v-icon v-if="idArrow" @click="idA" small>mdi-arrow-up</v-icon>
-        <v-icon v-if="!idArrow" @click="idD" small>mdi-arrow-down</v-icon></th>
+        <th>customer Id<v-icon  @click="sort('customerId','asc')" small>mdi-arrow-up</v-icon>
+        <v-icon  @click="sort('customerId','desc')" small>mdi-arrow-down</v-icon></th>
         <th>Customer Name</th>
     </tr>
      <tr v-for="item in arr"
-       :key="item.hotelId">
+       :key="item.i">
        <td>{{item.hotel_id}}</td>
        <td>{{item.hotel_name }}</td>
-       <td>{{JSON.stringify(item.door_no +','+item.street +','+item.landmark +','+item.area  +','+item.pincode) }}</td>
+       <td>{{item.address }}</td>
        <td>{{item.customer_id}}</td>
-       <td>{{item.customer_name }}</td>
+       <td>{{item.customerName }}</td>
        <td><v-btn @click="change(item)"><v-icon small
          >mdi-pencil</v-icon></v-btn></td>
        <td><v-btn @click="deleteRow(item.hotel_id)"><v-icon small
@@ -119,10 +117,6 @@
     Vue.use(VueAxios,axios);
     export default {
       data: () => ({
-        idArrow:true,
-        nameArrow:true,
-        // addressArrow:true,
-        hotelIdArrow:true,
         temp:{},
         arr:[],
         link:'http://127.0.0.1:3333/hotel/search',
@@ -142,29 +136,34 @@
           customerId:'', 
           hotelId:'',
           hotelName: '',
+          address:{
             doorNo:'',
             street:'',
             landmark:'',
             area:'',
-            pincode:''
+            pincode:''}
           
         },
           }),  
           mounted(){
-              Vue.axios.get('http://127.0.0.1:3333/hotel/custName')
+            Vue.axios.get('http://127.0.0.1:3333/hotel/address')
               .then((res)=>{
-                 this.arr=res.data;
-                 console.log(this.arr)
-                 })
+                this.arr=res.data
+                 console.log(res.data)
+                  })
+  
           }, 
              
           methods: {
+            read()
+            {},
             async insert(){
               Vue.axios.post('http://127.0.0.1:3333/hotel/create',this.field).then((res)=>{
             console.warn(res)
             })
             this.buton=true
-            this.dialog=true            
+            this.dialog=true  
+            this.read()          
             this.cancel()    
           },
           change(item) {
@@ -206,46 +205,14 @@
           console.log(val.data)
             this.arr= val.data
           },
-      idA(){
-        Vue.axios.get('http://127.0.0.1:3333/hotel/idA').then((res)=>{this.arr=res.data})
-        this.idArrow=false
-      },
-      idD(){
-        Vue.axios.get('http://127.0.0.1:3333/hotel/idD').then((res)=>{this.arr=res.data})
-        this.idArrow=true
-      },
-      hotelIdA(){
-        Vue.axios.get('http://127.0.0.1:3333/hotel/hotelIdA').then((res)=>{this.arr=res.data})
-        this.hotelIdArrow=false
-      },
-      hotelIdD(){
-        Vue.axios.get('http://127.0.0.1:3333/hotel/hotelIdD').then((res)=>{this.arr=res.data})
-        this.hotelIdArrow=true
-      },
-      nameA(){
-        Vue.axios.get('http://127.0.0.1:3333/hotel/nameA').then((res)=>{this.arr=res.data})
-        this.nameArrow=false
-      },
-      nameD(){
-        Vue.axios.get('http://127.0.0.1:3333/hotel/nameD').then((res)=>{this.arr=res.data})
-        this.nameArrow=true
-      },
-      // emailA(){
-      //   Vue.axios.get('http://127.0.0.1:3333/customer/emailA').then((res)=>{this.arr=res.data})
-      //   this.emailArrow=false
-      // },
-      // emailD(){
-      //   Vue.axios.get('http://127.0.0.1:3333/customer/emailD').then((res)=>{this.arr=res.data})
-      //   this.emailArrow=true
-      // },
-      // phoneA(){
-      //   Vue.axios.get('http://127.0.0.1:3333/customer/phoneA').then((res)=>{this.arr=res.data})
-      //   this.phoneArrow=false
-      // },
-      // phoneD(){
-      //   Vue.axios.get('http://127.0.0.1:3333/customer/phoneD').then((res)=>{this.arr=res.data})
-      //   this.phoneArrow=true
-      // },
+          sort(val,order){
+            let assign={
+          val:val,
+          order:order        
+      } 
+      console.log(assign),
+            Vue.axios.post('http://127.0.0.1:3333/hotel/sort',assign).then((res)=>{this.arr=res.data})
+          },
       }
     }
   

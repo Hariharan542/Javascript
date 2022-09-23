@@ -45,35 +45,66 @@ export default class CustomersController {
     }
     public async search({ request }: HttpContextContract) {
         const a=request.input('val')
-        if(/^[0-9]/.test(a) && a.length<5){
-            return Customer.query().where("customerId",a)
-        }else{
-            return Customer.query().where("customerName",a).orWhere("customerEmail",a).orWhere("customerPhone",a)
-        }
+        return   Customer.query()
+        .where((query)=>{
+            if(/^[0-9]/.test(a) && a.length<5){
+                query
+                .where("customers.customer_id",a)}
+
+            else{
+                 query.where("customer_name",'ilike','%' + a +'%')
+                 .orWhere("customer_email",'iLike','%' + a +'%').orWhere("customer_phone",a)
+            }
+            })
+            .join('hotels', 'customers.customer_id','=', 'hotels.customer_id')
+            .select('customers.*')
+            .groupBy('customers.customer_id')
+            .count('customers.customer_id as count')
+            .then(d =>                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                d.map(h => {
+                 const data = h.toJSON()
+                 return {
+                     ...data,
+                   count: h.$extras.count,
+                 }
+               })
+             )
     }
-    public async idA(){
-        return Customer.query().orderBy("customer_id","asc")        }
-    public async idD(){
-        return Customer.query().orderBy("customer_id","desc")        }
-    public async nameA(){
-        return Customer.query().orderBy("customer_name","asc")        }
-    public async nameD(){
-        return Customer.query().orderBy("customer_name","desc")        }
-    public async phoneA(){
-         return Customer.query().orderBy("customer_phone","asc")       }
-    public async phoneD(){
-        return Customer.query().orderBy("customer_phone","desc")       }
-    public async emailA(){
-        return Customer.query().orderBy("customer_email","asc")       }
-    public async emailD(){
-        return Customer.query().orderBy("customer_email","desc")       }
+    public async sort({request}:HttpContextContract){
+        let column=request.input('val')
+        let process=request.input('order')
+        return await Customer.query()
+        .join('hotels', 'customers.customer_id','=', 'hotels.customer_id')
+        .select('customers.*')
+        .count('customers.customer_id as count')
+        .orderBy(column,process)
+        .then(d =>                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+            d.map(h => {
+             const data = h.toJSON()
+             return {
+                 ...data,
+               count: h.$extras.count,
+             }
+           })
+         )
+    }
     public async count()
     {
-        return   Database
-        .from('customers')
-        .leftJoin('hotels', 'customers.customer_id', 'hotels.customer_id')
+        const a=await Customer.query()
+        .leftJoin('hotels', 'customers.customer_id','=', 'hotels.customer_id')
         .select('customers.*')
         .groupBy('customers.customer_id')
         .count('customers.customer_id as count')
+        .then(d =>                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+         d.map(h => {
+          const data = h.toJSON()
+          return {
+              ...data,
+            count: h.$extras.count,
+          }
+        })
+      )
+    return a
+    
     }
 }

@@ -68,14 +68,14 @@
    </v-form>
    <v-simple-table>
    <tr>
-    <th>customerId<v-icon v-if="idArrow" @click="idA" small>mdi-arrow-up</v-icon>
-      <v-icon v-if="!idArrow" @click="idD" small>mdi-arrow-down</v-icon></th>
-      <th>customer Name<v-icon v-if="nameArrow" @click="nameA" small>mdi-arrow-up</v-icon>
-      <v-icon v-if="!nameArrow" @click="nameD" small>mdi-arrow-down</v-icon></th>
-      <th>customer Email<v-icon v-if="emailArrow" @click="emailA" small>mdi-arrow-up</v-icon>
-      <v-icon v-if="!emailArrow" @click="emailD" small>mdi-arrow-down</v-icon></th>
-      <th>customer phone<v-icon v-if="phoneArrow" @click="phoneA" small>mdi-arrow-up</v-icon>
-      <v-icon v-if="!phoneArrow" @click="phoneD" small>mdi-arrow-down</v-icon></th>
+    <th>customerId<v-icon  @click="sort('customerId','asc')" small>mdi-arrow-up</v-icon>
+      <v-icon @click="sort('customerId','desc')" small>mdi-arrow-down</v-icon></th>
+      <th>customer name<v-icon  @click="sort('customerName','asc')" small>mdi-arrow-up</v-icon>
+        <v-icon @click="sort('customerName','desc')" small>mdi-arrow-down</v-icon></th>
+      <th>customer emailA<v-icon  @click="sort('customerEmail','asc')" small>mdi-arrow-up</v-icon>
+        <v-icon @click="sort('customerEmail','desc')" small>mdi-arrow-down</v-icon></th>
+      <th>customer phone<v-icon  @click="sort('customerPhone','asc')" small>mdi-arrow-up</v-icon>
+        <v-icon @click="sort('customerPhone','desc')" small>mdi-arrow-down</v-icon></th>
       <th>Total Hotel</th>
   </tr>
    <tr v-for="item in arr"
@@ -102,10 +102,7 @@
   Vue.use(VueAxios,axios);
   export default {
     data: () => ({
-      idArrow:true,
-      nameArrow:true,
-      emailArrow:true,
-      phoneArrow:true,
+      
       temp:{},
       arr:[],
       link:'http://127.0.0.1:3333/customer/search',
@@ -132,7 +129,8 @@
         customerId:'', 
         customerName: '',
         customerEmail:'',
-        customerPhone:''
+        customerPhone:'',
+        count:''
       },
         }),  
         mounted(){
@@ -186,37 +184,13 @@
         console.log(val.data)
           this.arr= val.data
         },
-    idA(){
-      Vue.axios.get('http://127.0.0.1:3333/customer/idA').then((res)=>{this.arr=res.data})
-      this.idArrow=false
-    },
-    idD(){
-      Vue.axios.get('http://127.0.0.1:3333/customer/idD').then((res)=>{this.arr=res.data})
-      this.idArrow=true
-    },
-    nameA(){
-      Vue.axios.get('http://127.0.0.1:3333/customer/nameA').then((res)=>{this.arr=res.data})
-      this.nameArrow=false
-    },
-    nameD(){
-      Vue.axios.get('http://127.0.0.1:3333/customer/nameD').then((res)=>{this.arr=res.data})
-      this.nameArrow=true
-    },
-    emailA(){
-      Vue.axios.get('http://127.0.0.1:3333/customer/emailA').then((res)=>{this.arr=res.data})
-      this.emailArrow=false
-    },
-    emailD(){
-      Vue.axios.get('http://127.0.0.1:3333/customer/emailD').then((res)=>{this.arr=res.data})
-      this.emailArrow=true
-    },
-    phoneA(){
-      Vue.axios.get('http://127.0.0.1:3333/customer/phoneA').then((res)=>{this.arr=res.data})
-      this.phoneArrow=false
-    },
-    phoneD(){
-      Vue.axios.get('http://127.0.0.1:3333/customer/phoneD').then((res)=>{this.arr=res.data})
-      this.phoneArrow=true
+    sort(val,order){
+      let assign={
+          val:val,
+          order:order        
+      }
+      Vue.axios.post('http://127.0.0.1:3333/customer/sort',assign).then((res)=>{
+        this.arr=res.data})
     },
     }
   }
