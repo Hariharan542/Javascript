@@ -27,11 +27,14 @@ export default class HotelValidator {
     hotelId:schema.number(),
     hotelName:schema.string(),
     customerId:schema.number(),
-    doorNo:schema.number(),
+    address:schema.object().members({
+      doorNo:schema.number(),
     street:schema.string(),
     landmark:schema.string(),
     area:schema.string(),
-    pincode:schema.number()
+    pincode:schema.number(),
+    }
+    )
   })
 
   /**

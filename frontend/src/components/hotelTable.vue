@@ -117,7 +117,6 @@
     Vue.use(VueAxios,axios);
     export default {
       data: () => ({
-        temp:{},
         arr:[],
         link:'http://127.0.0.1:3333/hotel/search',
         fill: true,
@@ -151,12 +150,18 @@
                 this.arr=res.data
                  console.log(res.data)
                   })
-  
           }, 
              
           methods: {
             read()
-            {},
+            {
+              Vue.axios.get('http://127.0.0.1:3333/hotel/address')
+              .then((res)=>{
+                this.arr=res.data
+                 console.log(res.data)
+                  })
+  
+            },
             async insert(){
               Vue.axios.post('http://127.0.0.1:3333/hotel/create',this.field).then((res)=>{
             console.warn(res)
@@ -169,31 +174,28 @@
           change(item) {
             this.dialog = true
             this.buton = false
-            this.temp=item
             this.field={
               customerId:item.customer_id,
               hotelId:item.hotel_id,
               hotelName:item.hotel_name,
-              doorNo:item.door_no,
-              street:item.street,
-              landmark:item.landmark,
-              area:item.area,
-              pincode:item.pincode
+              address:item.address
             }
-            console.log(this.field)
           },
-          save() {
-            this.formTwo= this.item
+          async save() {
             this.dialog = false
             this.buton = true
-            Vue.axios.put('http://127.0.0.1:3333/hotel/update',this.field)
+             console.log(this.field)
+            await axios.put('http://127.0.0.1:3333/hotel/update',this.field).then((response) => {
+              this.arr = response.data
+            })
+           this.read() 
             this.cancel()
           },
           deleteRow(hotel_id) {
           Vue.axios.delete(`http://127.0.0.1:3333/hotel/drop/${hotel_id}`).then((res)=>console.log(res))
           },
           cancel () {
-          this.dialog = false
+          this.dialog = true
           this.buton=true
           this.reset()
           },

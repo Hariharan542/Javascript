@@ -166,7 +166,6 @@
           this.buton = true
           Vue.axios.put('http://127.0.0.1:3333/customer/update',this.field)
           this.cancel()
-          this.mounted()
         },
         deleteRow(customer_id) {
         Vue.axios.delete(`http://127.0.0.1:3333/customer/drop/${customer_id}`).then((res)=>console.log(res))

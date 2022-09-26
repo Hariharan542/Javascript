@@ -1,8 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CustomerValidator from 'App/Validators/CustomerValidator'
 import Customer from 'App/Models/Customer'
-import Database from '@ioc:Adonis/Lucid/Database'
-
 export default class CustomersController {
     public async create({request}:HttpContextContract){
         try{
@@ -56,7 +54,7 @@ export default class CustomersController {
                  .orWhere("customer_email",'iLike','%' + a +'%').orWhere("customer_phone",a)
             }
             })
-            .join('hotels', 'customers.customer_id','=', 'hotels.customer_id')
+            .leftJoin('hotels', 'customers.customer_id','=', 'hotels.customer_id')
             .select('customers.*')
             .groupBy('customers.customer_id')
             .count('customers.customer_id as count')
@@ -74,9 +72,10 @@ export default class CustomersController {
         let column=request.input('val')
         let process=request.input('order')
         return await Customer.query()
-        .join('hotels', 'customers.customer_id','=', 'hotels.customer_id')
+        .leftJoin('hotels', 'customers.customer_id','=', 'hotels.customer_id')
         .select('customers.*')
         .count('customers.customer_id as count')
+        .groupBy("customers.customer_id")
         .orderBy(column,process)
         .then(d =>                                                                                                                                                                                                                                                                                                                                                                                                                                                        
             d.map(h => {
